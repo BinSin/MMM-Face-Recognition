@@ -1,0 +1,22 @@
+{
+  "name": "mmm-face-recognition",
+  "version": "1.0.0",
+  "description": "",
+  "main": "MMM-Face-Recognition.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BinSin/MMM-Face-Recognition.git"
+  },
+  "author": "BinSin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BinSin/MMM-Face-Recognition/issues"
+  },
+  "homepage": "https://github.com/BinSin/MMM-Face-Recognition#readme",
+  "dependencies": {
+    "aws-sdk": "^2.247.1"
+  }
+}
