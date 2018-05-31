@@ -24,29 +24,34 @@ module.exports = NodeHelper.create({
 
   comparingFace: function(payload) {
 	var self = this;
-
-	var image = data;
 	var params = {
-		Image: {
+		SimilarityThreshold: 90,
+		SourceImage: {
 			S3Object: {
 				Bucket: payload.Bucket,
-				Name: payload.Name
+				Name: payload.sourceName
 			}
 		},
-		Attributes: [ "DEFAULT", "ALL" ]
+		TargetImage: {
+			S3Object: {
+				Bucket: payload.Bucket,
+				Name: payload.targetName
+			}
+		}
 	};
 	rekognition.compareFaces(params, function(err, data) {
 		if(err) {
 			  self.sendSocketNotification("FAIL_FACE_RECOGNITION", err);
 		}
 		else {
-			  var face = data.Faces;
+			  var face = data.FaceMatches;
 			  for(var i=0; i<face.length; i++) {
-				  if(face[i].Face.Confidence > 80) {
-			 		 self.sendSocketNotification("SUCCESS_FACE_RECOGNITION", face[i]);
-				  	 return;
+				  if(face[i].Similarity > 90) {
+			 		 self.sendSocketNotification("SUCCESS_FACE_RECOGNITION", face[i].Similarity);
 				  }
 			  }
+			  self.sendSocketNotification("FAIL_FACE_RECOGNITION", face[i].Similarity);
+			return;
 		}
 	});
   },
@@ -54,9 +59,14 @@ module.exports = NodeHelper.create({
 
   socketNotificationReceived: function(notification, payload) {
 	var self = this;
-	
-	if (notification == "INIT_FACE_RECOGNITION") {
+	if (notification == "WAKE_UP_MIRROR") {
 		self.comparingFace(payload);
+	}
+	else if(notification == "INIT_FACE") {
+		self.sendSocketNotification("HIDE_MODULES");
+	}
+	else if(notification == "HIDE") {
+		self.sendSocketNotification("HIDE_ALL_MODULES", "hide all modules");
 	}
   },
 
